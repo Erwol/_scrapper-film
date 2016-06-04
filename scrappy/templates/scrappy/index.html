@@ -4,26 +4,78 @@
 {%  block content %}
 
 
-    <div class="content">
-      <div class="container">
+<div class="content">
+    <div class="container">
         <div class="row">
-          <div class="logo text-center">
-            <h2 class="subs-title text-center">FilmScrapping</h2>
-          </div>
+            <div class="logo text-center">
+                <a href="{% url 'scrappy:inicio' %}"><h2 class="subs-title text-center">FilmScrapping</h2></a>
+            </div>
 
 
-          <div class="subcription-info text-center">
-            {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-            <form class="subscribe_form" action="{% url 'scrappy:buscarPeli' %}" method="post">
-                {% csrf_token %}
-              <input required="" value="" placeholder="Nombre de la película..." class="email" id="email" name="nombre_peli" type="text">
-              <input class="subscribe" name="x" value="Buscar" type="submit">
-            </form>
-          </div>
+            <div class="subcription-info text-center">
+                {% if error_message %}
+                    <p><strong>{{ error_message }}</strong></p>
+                {% endif %}
+                <form class="subscribe_form" action="{% url 'scrappy:buscarPeli' %}" method="post">
+                    {% csrf_token %}
+                    <input required="" value="" placeholder="Nombre de la película..." class="email" id="email" name="nombre_peli" type="text">
+                    <input class="subscribe" name="x" value="Buscar" type="submit">
+                </form>
+
+            {% if peliculas %}
+                <br><br>
+                <div style="
+
+                    border: none;
+                    width: 100%;
+                    font-family: 'Consolas', sans-serif;
+                    font-size: 15px;
+                    border-radius: 30px;
+                    color: #fff;
+                    background-color: #24B7A4;
+                    font-size: large;
+                ">
+                    <h3 style="font-size: x-large;padding-bottom: 10px">Resultados para: {{ peli }}</h3>
+                    <div style="font-size: xx-large; font-family: Lato;">
+                        {{ media }}/10
+                    </div>
+                <br>
+                    {% for pelicula in peliculas %}
+                        Calificación:
+                        <span style="font-family: Lato;">
+                            {{ pelicula.last_score }}
+                        </span>
+
+
+                        {{ pelicula.name }}
+
+                        {% if pelicula.origin.name == "imdb" %}
+                            <img src="https://tvshowtracker.net/img/favicons/imdb.png">
+                        {% elif pelicula.origin.name == 'filmaffinity' %}
+                            <img src="http://www.transitblogger.com/pictures/Fminibullet.gif">
+                        {% elif pelicula.origin.name == 'fotogramas' %}
+                            <img src="http://img-s-msn-com.akamaized.net/tenant/amp/entityid/BB12KAs.img?h=16&w=16&m=6&q=60&u=t&o=t&l=f&f=png">
+                        {% elif pelicula.origin.name == 'filmscrapping' %}
+                            <!-- TODO Favicón para nuestra web -->
+                            <img src="http://img-s-msn-com.akamaized.net/tenant/amp/entityid/BB12KAs.img?h=16&w=16&m=6&q=60&u=t&o=t&l=f&f=png">
+
+                        {% endif %}
+
+
+                        <br>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+
+
+
+            </div>
+
         </div>
-      </div>
-
-
     </div>
+
+
+</div>
 
 {% endblock %}

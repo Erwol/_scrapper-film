@@ -9,26 +9,28 @@ from django.db import models
 from django.utils import timezone
 
 
-# Create your models here.
-class Film(models.Model):
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(default=timezone.now)
-    last_check = models.DateTimeField()
-    name = models.CharField(max_length=100, unique=True, blank=False)
-
-    def __str__(self):
-        return self.name
-
-
 class Origin(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
-    name = models.CharField(max_length=50, unique=False, blank=False)
+    name = models.CharField(max_length=50, unique=True, blank=False)
+    url = models.CharField(max_length=50, unique=True, blank=True)
 
     def __str__(self):
         return self.name
 
 
+class Film(models.Model):
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(default=timezone.now)
+    name = models.CharField(max_length=100, unique=True, blank=False)
+    origin = models.ForeignKey(Origin, on_delete=models.CASCADE)
+    last_score = models.IntegerField(default=5)
+
+    def __str__(self):
+        return self.name + " de " + self.origin.name + "."
+
+
+# Aquí cguardamos un histórico de búsquedas
 class Score(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
@@ -37,4 +39,4 @@ class Score(models.Model):
     score = models.IntegerField()
 
     def __str__(self):
-        return self.score, " a la película ", self.film.name, " el ", self.created_at, "."
+        return str(self.score) + " " + str(self.film.name)
