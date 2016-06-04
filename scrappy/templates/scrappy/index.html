@@ -1,0 +1,29 @@
+{% extends 'scrappy/base.html' %}
+{% load staticfiles %}
+{% block titulo_pagina %}Inicio{% endblock %}
+{%  block content %}
+
+
+    <div class="content">
+      <div class="container">
+        <div class="row">
+          <div class="logo text-center">
+            <h2 class="subs-title text-center">FilmScrapping</h2>
+          </div>
+
+
+          <div class="subcription-info text-center">
+            {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+            <form class="subscribe_form" action="{% url 'scrappy:buscarPeli' %}" method="post">
+                {% csrf_token %}
+              <input required="" value="" placeholder="Nombre de la película..." class="email" id="email" name="nombre_peli" type="text">
+              <input class="subscribe" name="x" value="Buscar" type="submit">
+            </form>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+{% endblock %}

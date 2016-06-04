@@ -13,6 +13,7 @@ from django.utils import timezone
 class Film(models.Model):
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
+    last_check = models.DateTimeField()
     name = models.CharField(max_length=100, unique=True, blank=False)
 
     def __str__(self):
