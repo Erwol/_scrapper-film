@@ -28,6 +28,7 @@ git pull origin master
 ~~~~
 mkdir filmscrapping && cd filmscrapping
 git clone https://github.com/Erwol/filmscrapping.git
-python manage.py runserver
+cd filmscrapping
+source deploy.sh
 ~~~~
 
