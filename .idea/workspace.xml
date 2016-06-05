@@ -1,19 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="26294908-d41d-48c2-8544-c4f7f32dab55" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/db.sqlite3" afterPath="$PROJECT_DIR$/db.sqlite3" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scrapper/settings.py" afterPath="$PROJECT_DIR$/scrapper/settings.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scrappy/filmaffinity.py" afterPath="$PROJECT_DIR$/scrappy/filmaffinity.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scrappy/fotogramas.py" afterPath="$PROJECT_DIR$/scrappy/fotogramas.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scrappy/imdb.py" afterPath="$PROJECT_DIR$/scrappy/imdb.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scrappy/models.py" afterPath="$PROJECT_DIR$/scrappy/models.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scrappy/templates/scrappy/index.html" afterPath="$PROJECT_DIR$/scrappy/templates/scrappy/index.html" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scrappy/urls.py" afterPath="$PROJECT_DIR$/scrappy/urls.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scrappy/views.py" afterPath="$PROJECT_DIR$/scrappy/views.py" />
-    </list>
+    <list default="true" id="26294908-d41d-48c2-8544-c4f7f32dab55" name="Default" comment="" />
     <ignored path="filmscrapping.iws" />
     <ignored path=".idea/workspace.xml" />
     <ignored path=".idea/dataSources.local.xml" />
