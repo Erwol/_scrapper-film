@@ -22,15 +22,13 @@ def buscar(pelicula):
 	try:
 		recurso = urllib2.urlopen(peticion)
 	except:
-		print "No se ha podido conectar a la web de los resultados"
-		sys.exit()
+		print "filmaffinity: No se ha podido conectar a la web de los resultados"
 
 	# Leo y analizo el recurso
 	try:
 		doc = BeautifulSoup(recurso.read())
 	except:
-		print "No se ha podido analizar correctamente el documento"
-		sys.exit(-1)
+		print "filmaffinity: No se ha podido analizar correctamente el documento"
 
 	# Busco en primer lugar que haya una pelicula que coincida exactamente con el criterio de busqueda
 	# Si no hay coincidencia exacta aborto el script.
@@ -38,8 +36,7 @@ def buscar(pelicula):
 	try:
 		div = doc.find("div", {"id": "adv-search-no-results"})
 		if div.b.get_text() == "No se han encontrado coincidencias.":
-			print "No existe ninguna pelicula que coincida con ese título"
-			sys.exit(-1)
+			print "filmaffinity: No existe ninguna pelicula que coincida con ese título"
 	except:
 		pass
 
@@ -56,8 +53,7 @@ def buscar(pelicula):
 				#print "Obteniendo pagina " + url
 				urls.append(url)
 	except:
-		print "No se ha podido conseguir la url de la pelicula"
-		sys.exit()
+		print "filmaffinity: No se ha podido conseguir la url de la pelicula"
 
 	lista = []
 
@@ -67,15 +63,13 @@ def buscar(pelicula):
 		try:
 			recurso = urllib2.urlopen(peticion)
 		except:
-			print "No se ha podido conectar con la web de la pelicula"
-			sys.exit()
+			print "filmaffinity: No se ha podido conectar con la web de la pelicula"
 
 		# Analizo el documento
 		try:
 			doc = BeautifulSoup(recurso.read())
 		except:
-			print "No se ha podido leer el documento de la pelicula"
-			sys.exit(-1)
+			print "filmaffinity: No se ha podido leer el documento de la pelicula"
 
 		# Obtengo la nota
 		try:
@@ -90,6 +84,9 @@ def buscar(pelicula):
 			nota = 0
 
 		lista.append((nombre, nota))
+
+	#if not len(lista):
+	#	lista.append((pelicula.strip(), -1))
 
 	return lista
 

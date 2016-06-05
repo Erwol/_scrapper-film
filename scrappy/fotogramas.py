@@ -11,7 +11,6 @@ sys.setdefaultencoding('utf8')
 fotogramas = "http://www.fotogramas.es"
 
 def buscar(pelicula):
-
 	peli = unicode(pelicula.replace(" ", "%20").strip())
 	url = fotogramas + "/content/search?SearchText=\"" + peli + "\"&filter[]=contentclass_id:49&activeFacets[contentclass_id:49:PELÍCULAS]="
 	ua = "Mozilla/5.0 (X11; Linux i686; rv:6.0.2) Gecko/20100101 Firefox/6.0.2"
@@ -23,14 +22,14 @@ def buscar(pelicula):
 	try:
 		recurso = urllib2.urlopen(peticion)
 	except:
-		print "No se ha podido conectar a la web de los resultados"
+		print "fotogramas: No se ha podido conectar a la web de los resultados"
 		sys.exit()
 
 	# Leo y analizo el recurso
 	try:
 		doc = BeautifulSoup(recurso.read())
 	except:
-		print "No se ha podido analizar correctamente el documento"
+		print "fotogramas: No se ha podido analizar correctamente el documento"
 		sys.exit(-1)
 
 	# Busco en primer lugar que haya una pelicula que coincida exactamente con el criterio de busqueda
@@ -38,13 +37,15 @@ def buscar(pelicula):
 
 	try:
 		div = doc.find("div", {"class": "warning"})
-		if div.b.get_text() == "No se han encontrado resultados al buscar \"" + pelicula + "\"":
-			print "No existe ninguna pelicula que coincida con ese título"
+		if div.h2.get_text() == "No se han encontrado resultados al buscar \"" + pelicula + "\"":
+			print "fotogramas: No existe ninguna pelicula que coincida con ese título"
 			sys.exit(-1)
 	except:
 		pass
 
 	# Llegados a este punto hay peliculas que se llaman como peli (puede haber varias)
+	# pero el buscador de fotogramas puede buscar no sólo en el título de la pelicula
+	# sino que incluso puede buscar la cadena en el compositor de la banda sonora...
 	try:
 		div = doc.findAll("div", {"class": "teaser_text"})
 		urls = []
@@ -57,7 +58,7 @@ def buscar(pelicula):
 				#print "Obteniendo pagina " + url
 				urls.append(url)
 	except:
-		print "No se ha podido conseguir la url de la pelicula"
+		print "fotogramas: No se ha podido conseguir la url de la pelicula"
 		sys.exit()
 
 	lista = []
@@ -68,14 +69,14 @@ def buscar(pelicula):
 		try:
 			recurso = urllib2.urlopen(peticion)
 		except:
-			print "No se ha podido conectar con la web de la pelicula"
+			print "fotogramas: No se ha podido conectar con la web de la pelicula"
 			sys.exit()
 
 		# Analizo el documento
 		try:
 			doc = BeautifulSoup(recurso.read())
 		except:
-			print "No se ha podido leer el documento de la pelicula"
+			print "fotogramas: No se ha podido leer el documento de la pelicula"
 			sys.exit(-1)
 
 		# Obtengo la nota
@@ -89,6 +90,9 @@ def buscar(pelicula):
 			pass
 
 		lista.append((h1, nota))
+
+	#if not len(lista):
+	#	lista.append((pelicula.strip(), -1))
 
 	return lista
 

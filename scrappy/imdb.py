@@ -22,26 +22,24 @@ def buscar(pelicula):
 	try:
 		recurso = urllib2.urlopen(peticion)
 	except:
-		print "No se ha podido conectar a la web de los resultados"
-		sys.exit()
+		print "imdb: No se ha podido conectar a la web de los resultados"
+
 
 	#Leo y analizo el recurso
 	try:
 		doc = BeautifulSoup(recurso.read())
 	except:
-		print "No se ha podido analizar correctamente el documento"
-		sys.exit(-1)
+		print "imdb: No se ha podido analizar correctamente el documento"
+
 
 	#Busco en primer lugar que haya una pelicula que coincida exactamente con el criterio de busqueda
 	#Si no hay coincidencia exacta aborto el script.
 	try:
 		h1 = doc.find("h1", {"class": "findHeader"})
 		if h1.contents[0] == "No results found for ":
-			print "No existe ninguna pelicula que coincida con ese título"
-			sys.exit(-1)
+			print "imdb: No existe ninguna pelicula que coincida con ese título"
 	except:
-		print "Error en la busqueda de resultados"
-		sys.exit()
+		pass
 
 
 	#Llegados a este punto hay peliculas que se llaman como peli (puede haber varias)
@@ -57,8 +55,8 @@ def buscar(pelicula):
 				#print "Obteniendo pagina " + url
 				urls.append(url)
 	except:
-		print "No se ha podido conseguir la url de la pelicula"
-		sys.exit()
+		print "imdb: No se ha podido conseguir la url de la pelicula"
+
 
 	lista = []
 
@@ -68,14 +66,14 @@ def buscar(pelicula):
 		try:
 			recurso = urllib2.urlopen(peticion)
 		except:
-			print "No se ha podido conectar con la web de la pelicula"
+			print "imdb: No se ha podido conectar con la web de la pelicula"
 			sys.exit()
 
 		#Analizo el documento
 		try:
 			doc = BeautifulSoup(recurso.read())
 		except:
-			print "No se ha podido leer el documento de la pelicula"
+			print "imdb: No se ha podido leer el documento de la pelicula"
 			sys.exit(-1)
 
 		# Obtengo la nota
@@ -87,6 +85,9 @@ def buscar(pelicula):
 			nota = 0
 
 		lista.append((h1, nota))
+
+	#if not len(lista):
+	#	lista.append((pelicula.strip(), -1))
 
 	return lista
 

@@ -23,9 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'wlk4cpgpa3@l0lvlv8z$=2c%iprnxn^+a*3w*8klgi_4lvlxf_'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
+DEBUG = False
 
 
 # Application definition
@@ -121,3 +119,18 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT	= os.path.join(BASE_DIR,	'static')
+
+import dj_database_url
+
+DATABASES['default'] = dj_database_url.config()
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+ALLOWED_HOSTS = ['*']
+
+DEBUG = False
+
+try:
+    from .local_settings import *
+except ImportError:
+    pass
