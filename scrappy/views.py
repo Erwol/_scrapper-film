@@ -123,10 +123,11 @@ def refrescar(listado):
 # Función que procesa la búsqueda efectuada por el usuario
 def resultados(request):
     if request.method == "POST":
+        forzar = request.POST.get('forzar') # Objeto multvaluado. Devolverá True o False
         peli = request.POST['nombre_peli']
         if peli:
             coincidencias, nota = busqueda_interna(peli)
-            if coincidencias:   # Hay al menos una entrada que coincide con un texto introducido
+            if coincidencias and not forzar:   # Hay al menos una entrada que coincide con un texto introducido
                 if refrescar(coincidencias):
                     # Como ha pasado un tiempo desde que comprobamos en el exterior, refrescamos la BD
                     if not busqueda_externa(request, peli, True):

@@ -14,12 +14,15 @@
 
             <div class="subcription-info text-center">
                 {% if error_message %}
-                    <p><strong>{{ error_message }}</strong></p>
+                    <p style="color: red;"><strong>{{ error_message }}</strong></p>
                 {% endif %}
                 <form class="subscribe_form" action="{% url 'scrappy:buscarPeli' %}" method="post">
                     {% csrf_token %}
-                    <input required="" value="" placeholder="Nombre de la película..." class="email" id="email" name="nombre_peli" type="text">
+                    <input autocomplete="on" required="" value="" placeholder="Nombre de la película..." name="nombre_peli" type="text">
+                    <br>
+                    <input type="checkbox" name="forzar" unchecked data-toggle="toggle" data-size="large">
                     <input class="subscribe" name="x" value="Buscar" type="submit">
+
                 </form>
 
             {% if peliculas %}
