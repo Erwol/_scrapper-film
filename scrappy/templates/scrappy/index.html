@@ -20,7 +20,10 @@
                     {% csrf_token %}
                     <input autocomplete="on" required="" value="" placeholder="Nombre de la película..." name="nombre_peli" type="text">
                     <br>
-                    <input type="checkbox" name="forzar" unchecked data-toggle="toggle" data-size="large">
+
+
+                    <span style="color: black;">Forzar nueva búsqueda: </span><input type="checkbox" name="forzar" unchecked data-toggle="toggle" data-size="small">
+
                     <input class="subscribe" name="x" value="Buscar" type="submit">
 
                 </form>
@@ -37,15 +40,17 @@
                     background-color: #24B7A4;
                     padding: 10px;
                     font-size: large;
+                    margin-bottom: 100px;
                 ">
                     <h3 style="font-size: x-large;padding-bottom: 10px">Resultados para: {{ peli }}</h3>
+
+
                     <div style="font-size: xx-large; font-family: Lobster; ">
                         {{ media }}/10
                     </div>
                 <br>
                     {% for pelicula in peliculas %}
-                        Calificación:
-                        <span style="font-family: Lato;">
+                        <span style="font-family: Lobster;">
                             {{ pelicula.last_score }}
                         </span>
 
@@ -63,11 +68,17 @@
                             <img src="http://img-s-msn-com.akamaized.net/tenant/amp/entityid/BB12KAs.img?h=16&w=16&m=6&q=60&u=t&o=t&l=f&f=png">
 
                         {% endif %}
-
-
                         <br>
                     {% endfor %}
+
+                    <form action="{% url 'scrappy:generar_estadisticas' %}" method="post">
+                        {% csrf_token %}
+                        <input class="hidden" name="busqueda" value="{{ peli }}"/>
+                        <input class="subscribe" style="margin-top:10px;color: black; background-color: #24B7A4;" name="x" value="Generar gráfica" type="submit">
+                    </form>
                 </div>
+
+
             {% endif %}
 
 

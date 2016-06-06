@@ -8,5 +8,6 @@ app_name = 'scrappy'
 urlpatterns = [
     url(r'^$', views.inicio, name='inicio'),
     url(r'^buscarPelicula/', views.resultados, name='buscarPeli'),
-    url(r'^(?P<pk>[0-9]+)/votar/$', views.votar, name='votar'),
+    url(r'^estadisticas/', views.generar_grafica, name='generar_estadisticas'),
+    #url(r'^(?P<pk>[0-9]+)/votar/$', views.votar, name='votar'),
 ]

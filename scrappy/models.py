@@ -20,8 +20,8 @@ class Origin(models.Model):
 
 
 class Film(models.Model):
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(default=timezone.now)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     name = models.CharField(max_length=100, unique=False, blank=False)
     origin = models.ForeignKey(Origin, on_delete=models.CASCADE)
     last_score = models.FloatField()

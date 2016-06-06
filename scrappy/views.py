@@ -4,6 +4,7 @@ from .models import *
 import filmaffinity
 import fotogramas
 import imdb
+from django.utils import timezone
 from django.utils.timezone import utc
 from datetime import datetime
 from threading import Thread
@@ -26,12 +27,26 @@ def guarda_peliculas(listado, origen):
 # Función que busca en nuestra base de datos (que actúa como caché)
 def busqueda_interna(peli):
     coincidencias = []
-    nota = 0
+    nota_total = 0
+    nota_imdb = 0
+    nota_filmaffinity = 0
+    nota_fotogramas = 0
+    num_ocurrencias = 0
+    imdb = Origin.objects.get(name="imdb")
+    filmaffinity = Origin.objects.get(name="filmaffinity")
+    fotogramas = Origin.objects.get(name="fotogramas")
     for pelicula in Film.objects.all():
         if str(peli).lower() in str(pelicula.name).lower():
-            nota += pelicula.last_score
+            nota_total += pelicula.last_score
+            if pelicula.origin == imdb:
+                nota_imdb += pelicula.last_score
+            if pelicula.origin == filmaffinity:
+                nota_filmaffinity += pelicula.last_score
+            if pelicula.origin == fotogramas:
+                nota_fotogramas += pelicula.last_score
             coincidencias.append(pelicula)
-    return coincidencias, nota
+            num_ocurrencias += 1
+    return coincidencias, nota_total, nota_imdb, nota_filmaffinity, nota_fotogramas, num_ocurrencias
 
 
 # Función que procesa la votación del usuario
@@ -68,6 +83,7 @@ def buscarI(p):
 def actualizar_puntuaciones(listado, origen):
     for pelicula in listado:
         pelicula_existente = Film.objects.get(name=pelicula[0], origin=origen)
+        pelicula_existente.save()
         # Guardamos la puntuación sea o no igual a la última introducida para poder generar un histórico
         nueva_puntuacion = Score(score=pelicula[1], film=pelicula_existente, origin=origen)
         nueva_puntuacion.save()
@@ -126,7 +142,7 @@ def resultados(request):
         forzar = request.POST.get('forzar') # Objeto multvaluado. Devolverá True o False
         peli = request.POST['nombre_peli']
         if peli:
-            coincidencias, nota = busqueda_interna(peli)
+            coincidencias, nota, _, _, _, _ = busqueda_interna(peli)
             if coincidencias and not forzar:   # Hay al menos una entrada que coincide con un texto introducido
                 if refrescar(coincidencias):
                     # Como ha pasado un tiempo desde que comprobamos en el exterior, refrescamos la BD
@@ -135,7 +151,7 @@ def resultados(request):
                         return render(request, 'scrappy/index.html', {
                             'error_message': mensaje,
                         })
-                    coincidencias, nota = busqueda_interna(peli)
+                    coincidencias, nota, _, _, _, _ = busqueda_interna(peli)
                     if nota == 0:
                         media = 0
                     else:
@@ -162,7 +178,7 @@ def resultados(request):
                     return render(request, 'scrappy/index.html', {
                         'error_message': mensaje,
                     })
-                coincidencias, nota = busqueda_interna(peli)
+                coincidencias, nota, _, _, _, _ = busqueda_interna(peli)
                 if nota == 0:
                     media = 0
                 else:
@@ -178,3 +194,26 @@ def resultados(request):
             })
     else:
         return render(request, 'scrappy/index.html', {})
+
+
+def generar_grafica(request):
+    nombre_busqueda = request.POST['busqueda']
+    # Contamos el número de películas que hay de cada servicio
+    coincidencias, nota_total, nota_imdb, nota_filmaffinity, nota_fotogramas, num_ocurrencias = busqueda_interna(nombre_busqueda)
+
+    if nota_imdb != 0:
+        nota_imdb = nota_imdb / num_ocurrencias
+    if nota_filmaffinity != 0:
+        nota_filmaffinity = nota_filmaffinity / num_ocurrencias
+    if nota_fotogramas != 0:
+        nota_fotogramas = nota_fotogramas / num_ocurrencias
+
+
+
+    return render(request, 'scrappy/grafica.html', {
+        'busqueda': str(nombre_busqueda),
+        'imdb': str(nota_imdb),
+        'fotogramas': str(nota_fotogramas),
+        'filmaffinity': str(nota_filmaffinity),
+
+    })

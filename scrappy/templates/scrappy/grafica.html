@@ -1,0 +1,88 @@
+{% extends 'scrappy/base.html' %}
+{% load staticfiles %}
+{% block titulo_pagina %}Inicio{% endblock %}
+{%  block content %}
+
+
+<div class="content">
+    <div class="container">
+        <div class="row">
+            <div class="logo text-center">
+                <a href="{% url 'scrappy:inicio' %}"><h2 class="subs-title text-center">FilmScrapping</h2></a>
+            </div>
+
+
+            <div class="subcription-info text-center">
+                {% if error_message %}
+                    <p style="color: red;"><strong>{{ error_message }}</strong></p>
+                {% endif %}
+                <form class="subscribe_form" action="{% url 'scrappy:buscarPeli' %}" method="post">
+                    {% csrf_token %}
+                    <input autocomplete="on" required="" value="" placeholder="Nombre de la película..." name="nombre_peli" type="text">
+                    <br>
+
+
+                    <span style="color: black;">Forzar nueva búsqueda: </span><input type="checkbox" name="forzar" unchecked data-toggle="toggle" data-size="small">
+
+                    <input class="subscribe" name="x" value="Buscar" type="submit">
+
+                </form>
+
+
+
+
+
+
+
+
+
+
+                    <div id="columnchart_values" style="width: 468px; height: 300px;"></div>
+
+
+
+
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+		<script type="text/javascript">
+			google.charts.load("current", {packages:['corechart']});
+			google.charts.setOnLoadCallback(drawChart);
+
+			function drawChart() {
+
+				  var data = google.visualization.arrayToDataTable([
+					["Element", "Density", { role: "style" } ],
+					["Imdb", {{ imdb }}, "#b87333"],
+					["Filmaffinity", {{ filmaffinity }}, "silver"],
+					["Fotogramas", {{ fotogramas }}, "gold"]
+				  ]);
+
+				  var view = new google.visualization.DataView(data);
+				  view.setColumns([0, 1,
+								   { calc: "stringify",
+									 sourceColumn: 1,
+									 type: "string",
+									 role: "annotation" },
+								   2]);
+
+				  var options = {
+					title: "Comparativa de notas para \"{{ busqueda }}\"",
+					width: 600,
+					height: 400,
+					bar: {groupWidth: "95%"},
+					legend: { position: "none" },
+				  };
+				  var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values"));
+				  chart.draw(view, options);
+			}
+		</script>
+
+{% endblock %}
