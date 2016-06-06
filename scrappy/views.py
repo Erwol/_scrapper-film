@@ -28,10 +28,21 @@ def guarda_peliculas(listado, origen):
 def busqueda_interna(peli):
     coincidencias = []
     nota_total = 0
-    nota_imdb = 0
-    nota_filmaffinity = 0
-    nota_fotogramas = 0
-    num_ocurrencias = 0
+    # Nombre de la fuente - Número de objetos - Sumatorio de notas
+    datos = {
+        'imdb': {
+            'numero': 0,
+            'nota': 0
+        },
+        'filmaffinity': {
+            'numero': 0,
+            'nota': 0
+        },
+        'fotogramas': {
+            'numero': 0,
+            'nota': 0
+        }
+    }
     imdb = Origin.objects.get(name="imdb")
     filmaffinity = Origin.objects.get(name="filmaffinity")
     fotogramas = Origin.objects.get(name="fotogramas")
@@ -39,14 +50,16 @@ def busqueda_interna(peli):
         if str(peli).lower() in str(pelicula.name).lower():
             nota_total += pelicula.last_score
             if pelicula.origin == imdb:
-                nota_imdb += pelicula.last_score
+                datos['imdb']['nota'] += pelicula.last_score
+                datos['imdb']['numero'] += 1
             if pelicula.origin == filmaffinity:
-                nota_filmaffinity += pelicula.last_score
+                datos['filmaffinity']['nota'] += pelicula.last_score
+                datos['filmaffinity']['numero'] += 1
             if pelicula.origin == fotogramas:
-                nota_fotogramas += pelicula.last_score
+                datos['fotogramas']['nota'] += pelicula.last_score
+                datos['fotogramas']['numero'] += 1
             coincidencias.append(pelicula)
-            num_ocurrencias += 1
-    return coincidencias, nota_total, nota_imdb, nota_filmaffinity, nota_fotogramas, num_ocurrencias
+    return coincidencias, nota_total, datos
 
 
 # Función que procesa la votación del usuario
@@ -142,7 +155,7 @@ def resultados(request):
         forzar = request.POST.get('forzar') # Objeto multvaluado. Devolverá True o False
         peli = request.POST['nombre_peli']
         if peli:
-            coincidencias, nota, _, _, _, _ = busqueda_interna(peli)
+            coincidencias, nota, datos = busqueda_interna(peli)
             if coincidencias and not forzar:   # Hay al menos una entrada que coincide con un texto introducido
                 if refrescar(coincidencias):
                     # Como ha pasado un tiempo desde que comprobamos en el exterior, refrescamos la BD
@@ -151,7 +164,7 @@ def resultados(request):
                         return render(request, 'scrappy/index.html', {
                             'error_message': mensaje,
                         })
-                    coincidencias, nota, _, _, _, _ = busqueda_interna(peli)
+                    coincidencias, nota, datos = busqueda_interna(peli)
                     if nota == 0:
                         media = 0
                     else:
@@ -178,7 +191,7 @@ def resultados(request):
                     return render(request, 'scrappy/index.html', {
                         'error_message': mensaje,
                     })
-                coincidencias, nota, _, _, _, _ = busqueda_interna(peli)
+                coincidencias, nota, datos = busqueda_interna(peli)
                 if nota == 0:
                     media = 0
                 else:
@@ -199,16 +212,20 @@ def resultados(request):
 def generar_grafica(request):
     nombre_busqueda = request.POST['busqueda']
     # Contamos el número de películas que hay de cada servicio
-    coincidencias, nota_total, nota_imdb, nota_filmaffinity, nota_fotogramas, num_ocurrencias = busqueda_interna(nombre_busqueda)
+    coincidencias, nota_total, datos = busqueda_interna(nombre_busqueda)
 
-    if nota_imdb != 0:
-        nota_imdb = nota_imdb / num_ocurrencias
-    if nota_filmaffinity != 0:
-        nota_filmaffinity = nota_filmaffinity / num_ocurrencias
-    if nota_fotogramas != 0:
-        nota_fotogramas = nota_fotogramas / num_ocurrencias
-
-
+    if datos['imdb']['nota'] != 0:
+        nota_imdb = datos['imdb']['nota'] / datos['imdb']['numero']
+    else:
+        nota_imdb = 0
+    if datos['filmaffinity']['nota'] != 0:
+        nota_filmaffinity = datos['filmaffinity']['nota'] / datos['filmaffinity']['numero']
+    else:
+        nota_filmaffinity = 0
+    if datos['fotogramas']['nota'] != 0:
+        nota_fotogramas = datos['fotogramas']['nota'] / datos['fotogramas']['numero']
+    else:
+        nota_fotogramas = 0
 
     return render(request, 'scrappy/grafica.html', {
         'busqueda': str(nombre_busqueda),
