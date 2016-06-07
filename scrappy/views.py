@@ -209,27 +209,33 @@ def resultados(request):
 
 
 def generar_grafica(request):
-    nombre_busqueda = request.POST['busqueda']
-    # Contamos el número de películas que hay de cada servicio
-    coincidencias, nota_total, datos = busqueda_interna(nombre_busqueda)
+    if request.method == "POST":
+        nombre_busqueda = request.POST['busqueda']
+        # Contamos el número de películas que hay de cada servicio
+        coincidencias, nota_total, datos = busqueda_interna(nombre_busqueda)
 
-    if datos['imdb']['nota'] != 0:
-        nota_imdb = datos['imdb']['nota'] / datos['imdb']['numero']
-    else:
-        nota_imdb = 0
-    if datos['filmaffinity']['nota'] != 0:
-        nota_filmaffinity = datos['filmaffinity']['nota'] / datos['filmaffinity']['numero']
-    else:
-        nota_filmaffinity = 0
-    if datos['fotogramas']['nota'] != 0:
-        nota_fotogramas = datos['fotogramas']['nota'] / datos['fotogramas']['numero']
-    else:
-        nota_fotogramas = 0
+        if datos['imdb']['nota'] != 0:
+            nota_imdb = datos['imdb']['nota'] / datos['imdb']['numero']
+        else:
+            nota_imdb = 0
+        if datos['filmaffinity']['nota'] != 0:
+            nota_filmaffinity = datos['filmaffinity']['nota'] / datos['filmaffinity']['numero']
+        else:
+            nota_filmaffinity = 0
+        if datos['fotogramas']['nota'] != 0:
+            nota_fotogramas = datos['fotogramas']['nota'] / datos['fotogramas']['numero']
+        else:
+            nota_fotogramas = 0
 
-    return render(request, 'scrappy/grafica.html', {
-        'busqueda': str(nombre_busqueda),
-        'imdb': str(nota_imdb),
-        'fotogramas': str(nota_fotogramas),
-        'filmaffinity': str(nota_filmaffinity),
+        return render(request, 'scrappy/grafica.html', {
+            'busqueda': str(nombre_busqueda),
+            'imdb': str(nota_imdb),
+            'fotogramas': str(nota_fotogramas),
+            'filmaffinity': str(nota_filmaffinity),
 
-    })
+        })
+    else:
+        return render(request, 'scrappy/index.html', {
+            'error_message': "Debes buscar una película antes de poder generar su gráfica.",
+
+        })
