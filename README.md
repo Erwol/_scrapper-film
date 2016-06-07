@@ -7,7 +7,7 @@
 * Ernesto Wulff Olea
 
 ### Fuentes de información:
-* Rotten Tomatoes
+* Fotogramas
 * IMDB
 * Film Affinity
 
