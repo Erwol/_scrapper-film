@@ -4,7 +4,6 @@ from .models import *
 import filmaffinity
 import fotogramas
 import imdb
-from django.utils import timezone
 from django.utils.timezone import utc
 from datetime import datetime
 from threading import Thread
